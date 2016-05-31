@@ -5,7 +5,7 @@ var app = angular.module('wscene', [
     'wscene.controllers',
     //'http-auth-interceptor',
     'ngActivityIndicator',
-    //'Services'
+    'Services'
 ]);
 
 
@@ -17,7 +17,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpP
 
             .state("home", {
                 url: "/home",
-                templateUrl: "templates/index.html",
+                templateUrl: "templates/home.html",
                 controller: 'HomeController',
                 resolve: {
                     data: ['$q', function($q) {
