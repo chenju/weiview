@@ -3,7 +3,9 @@
     --><div class="h_wrp" ng-style="x.csstext"><!--
         --><div init ng-repeat="c in x.child" elay='{{c.delay}}' addClass="{{c.animat}}" class="animated" ng-style="{{c.csstext}}" ng-touchend="{{c.action}}">{{c.label}}</div><!--
             
-             --><i class='up' ng-show="!$last"></i><!--
+             --><i class='up' ng-show="!$last"></i>
+                <i ng-show="audioable" ng-class="{true: 'cir'}[_audio_val]" class="music btn_audio" ng-touchend="audio_control()"></i>
+             <!--
 
 --></section><!--
 --></div><!--
@@ -11,4 +13,4 @@
 --><div class="modal_bg" ng-click="modalhide()"></div><!--
     --><img ng-src="{{data.modalimg}}" class="Absolute-Center" ng-click="data.modal=false"></img><!--
 --></div>
- --><div ng-show="audioable" class="music btn_audio cir" ng-click="data.audiopause()"></div><!--
+

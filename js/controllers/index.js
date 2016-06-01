@@ -48,7 +48,7 @@ angular.module('wscene.controllers', []).controller('HomeController',
                 $scope.style.pageH = document.documentElement.clientHeight + 3
                 $scope.style.pageW = document.documentElement.clientWeight
                     //$scope.style.main = {height:$scope.style.pageH*$scope.pagecount+'px'}
-                $scope.style.mainH = ($scope.style.pageH - 3) * $scope.pagecount + 'px'
+                $scope.style.mainH = ($scope.style.pageH) * $scope.pagecount + 'px'
                 $scope.style.transform = 'translate3d(0px, 0px, 0px)'
                 console.log($scope.style.pageH)
 
@@ -114,7 +114,59 @@ angular.module('wscene.controllers', []).controller('HomeController',
 
 
                 $scope.datas = response.page;
-                //if ($scope.datas.music) $scope.audioable = true
+                //load music
+                if (response.music) {
+                    $scope.audioable = true
+                    $scope._audio_val = false;
+                    var _audioSrc = response.music,
+                        _audio = null;
+                    
+                    var options_audio = {
+                        loop: true,
+                        preload: "auto",
+                        src: _audioSrc
+                    }
+                    _audio = new Audio();
+                    
+                    for (var key in options_audio) {
+                        if (options_audio.hasOwnProperty(key) && (key in _audio)) {
+                            _audio[key] = options_audio[key];
+                        }
+                    }
+                    _audio.load();
+                    
+
+                    _audio.addEventListener('play',
+                        function() {
+                            $scope._audio_val = true;
+                        })
+                    _audio.addEventListener('pause',
+                        function() {
+                            $scope._audio_val = false;
+                        })
+
+                    _audio.play();
+
+                    $scope.audio_control = function() {
+                        console.log(_audio)
+                        if ($scope._audio_val) {
+                             $scope.audio_stop();
+                        } else {
+                             $scope.audio_play();
+                        }
+                    }
+                    $scope.audio_play = function() {
+                        //e.find(".btn_audio").removeClass("stop")
+                        $scope._audio_val=true
+                        if (_audio) _audio.play();
+                    }
+
+                    $scope.audio_stop = function() {
+                        //e.find(".btn_audio").addClass("stop")
+                        $scope._audio_val = false;
+                        if (_audio) _audio.pause();
+                    };
+                }
 
                 $scope.pagecount = $scope.datas.length
                 $scope.resize()

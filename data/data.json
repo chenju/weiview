@@ -4,7 +4,7 @@
         "id":"1",
         "title": "第一条",
         "time":"2013",
-        "music": "music/",
+        "music": "music/ym.mp3",
         "page": [{
             
             "csstext": {
