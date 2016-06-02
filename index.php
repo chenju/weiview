@@ -7,7 +7,7 @@ $signPackage = $jssdk->GetSignPackage();
 <html ng-app="wscene">
 
 <head>
-    <title>angular-deckgrid</title>
+    <title>wscene</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <meta content="width=640,user-scalable=no,minimal-ui,target-densitydpi=device-dpi" name="viewport">
     <link rel="stylesheet" href="styles/animate.css">

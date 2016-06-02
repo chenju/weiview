@@ -2,7 +2,9 @@
 
     "issues":[{
         "id":"1",
-        "title": "第一条",
+        "sharetitle": "武汉百安居团签会",
+        "sharedec":"2016年5月28日诚邀您参加武汉百安居团签会",
+        "shareicon":"http://www.bnq.com.cn/dc/img/logo.png",
         "time":"2013",
         "preloadimages":["./img/arrow_down.png"],
         "music": null,
@@ -11,6 +13,7 @@
             "csstext": {
                 "background-image": "url(img/bg.png)"
             },
+            "arrow":"black",
             "child": [{
                 "label": "动画测试bounceIn",
                 "animat": "bounceIn",
@@ -89,6 +92,7 @@
             "csstext": {
                 "background": "yellow"
             },
+            "arrow":"false",
             "child": [{
                 "label": "页内跳转无过场",
                 "animat": "fadeIn",
@@ -167,6 +171,7 @@
             "csstext": {
                 "background": "black"
             },
+            "arrow":"white",
             "signupapi":"/api/event/groupbuy",
             "child": []
         }]

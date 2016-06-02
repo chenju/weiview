@@ -134,6 +134,7 @@ angular.module('wscene.controllers', []).controller('HomeController',
                         }
                     }
                 }
+                //wx share title
 
                 wx.ready(function() {
 
@@ -147,10 +148,10 @@ angular.module('wscene.controllers', []).controller('HomeController',
                     });
 
                     wx.onMenuShareAppMessage({
-                        title: '武汉百安居团签会', // 分享标题
-                        desc: '2016年5月28日诚邀您参加武汉百安居团签会。', // 分享描述
+                        title: response.sharetitle, // 分享标题
+                        desc:  response.sharedesc, // 分享描述
                         link: '', // 分享链接
-                        imgUrl: 'http://www.bnq.com.cn/dc/img/logo.png', // 分享图标
+                        imgUrl: response.shareicon, // 分享图标
                         type: '', // 分享类型,music、video或link，不填默认为link
                         dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                         success: function() {
@@ -164,9 +165,9 @@ angular.module('wscene.controllers', []).controller('HomeController',
                     });
 
                     wx.onMenuShareTimeline({
-                        title: '武汉百安居团签会', // 分享标题
+                        title: response.sharetitle, // 分享标题
                         link: '', // 分享链接
-                        imgUrl: 'http://www.bnq.com.cn/dc/img/logo.png', // 分享图标
+                        imgUrl: response.shareicon, // 分享图标
                         success: function() {
                             // 用户确认分享后执行的回调函数
                         },
@@ -183,270 +184,10 @@ angular.module('wscene.controllers', []).controller('HomeController',
 
             }
 
-
-
-
-
-
-
-            /*preloader.preloadImages($scope.imageLocations).then(
-                function handleResolve(imageLocations) {
-
-                    // Loading was successful.
-                    $scope.isLoading = false;
-                    $scope.isSuccessful = true;
-                    $scope.isActive = true;
-                    $timeout(function() {
-                        $activityIndicator.stopAnimating();
-                    }, 500)
-                    console.info("Preload Successful");
-
-                },
-                function handleReject(imageLocation) {
-
-                    // Loading failed on at least one image.
-                    $scope.isLoading = false;
-                    $scope.isSuccessful = false;
-
-                    console.error("Image Failed", imageLocation);
-                    console.info("Preload Failure");
-
-                },
-                function handleNotify(event) {
-
-                    $scope.percentLoaded = event.percent;
-
-                    console.info("Percent loaded:", event.percent);
-
-                }
-            );*/
-
-
-
-
-
-
         }
 
 
     )
-    .controller('IndexController',
-
-        function($scope, $location, $timeout, $activityIndicator, $rootScope) {
-
-            'use strict';
-            $scope.isActive = true;
-            console.log($rootScope.currentUser)
-        }
-    )
-    .controller('AdminCtrl', function($scope, $location, $timeout, $activityIndicator, $rootScope) {
-
-        'use strict';
-        $scope.isActive = true;
-        console.log($rootScope.currentUser)
-    })
-    .controller('userListController',
-
-        function($scope, UserService, $state) {
-
-            'use strict';
-            $scope.isActive = true;
-            $scope.userlist = UserService.userlist;
-            $scope.newpassword = '***********';
-
-            $scope.sel = function(n, v) {
-                $scope.userlist[n].role = v
-            }
-
-        }
-    ).controller('UserInfoController',
-
-        function($scope, UserService, $state) {
-
-            'use strict';
-            $scope.isActive = true;
-            $scope.user = UserService.user;
-            $scope.newpassword = '';
-            $scope.repeatpassword = '';
-
-
-
-            $scope.save = function() {
-                if ($scope.newpassword == '') {
-
-                } else {
-
-                    if ($scope.newpassword == $scope.repeatpassword) {
-                        user.newpassword = $scope.newpassword
-                    } else {
-                        alert('两次输入密码不一致')
-                    }
-                }
-                UserService.update($scope.user)
-            }
-
-            $scope.quit = function() {
-                $state.go("list");
-            }
-        }
-    ).controller('OverController',
-
-        function($scope, $location, $timeout, $activityIndicator) {
-
-            'use strict';
-            $scope.isActive = true;
-        }
-    ).controller('ListController', ['$scope',
-        'IssuePostService', '$modal', 'Auth', '$rootScope', '$state',
-
-        function($scope, IssuePostService, $modal, Auth, $rootScope, $state) {
-
-            'use strict';
-            $scope.isActive = true;
-            $scope.issuePostService = IssuePostService;
-            $scope.logout = Auth.logout
-
-            $scope.edit = function(n) {
-
-                $state.go("edit", {
-                    issueid: n
-                });
-
-            }
-
-            $scope.info = function() {
-
-                $state.go("userinfo");
-
-            }
-
-
-            $scope.userlist = function() {
-
-                $state.go("userlist");
-
-            }
-
-            $scope.delete = function(n) {
-                $scope.issuePostService.delIssuePost(n)
-            }
-
-
-            //$rootScope.userService = UserService;
-            $scope.broadcastBtnEvent = function(event) {
-                $rootScope.$broadcast(event);
-            };
-
-        }
-    ])
-    .controller('EditController', ['$scope',
-        'IssuePostService', "issueService", 'Auth',
-
-        function($scope, IssuePostService, issueService, Auth) {
-
-            'use strict';
-            $scope.isActive = true;
-            $scope.issuePostService = IssuePostService;
-            $scope.logout = Auth.logout
-            $scope.del = function(index) {
-                $scope.issuePostService.issuePost.page.splice(index, 1)
-            }
-            $scope.add = function() {
-                var addPage = new issueService.page()
-                console.log($scope.issuePostService.issuePost)
-                $scope.issuePostService.issuePost.page.push(addPage)
-                console.log($scope.issuePostService.issuePost.page)
-            }
-            $scope.save = function() {
-
-                if ($scope.issuePostService.issuePost.id == 'temp') {
-                    $scope.issuePostService.addIssuePost($scope.issuePostService.issuePost)
-
-                } else {
-                    console.log($scope.issuePostService.issuePost)
-                    $scope.issuePostService.updateIssuePost($scope.issuePostService.issuePost)
-                }
-
-            }
-
-        }
-    ])
-    .controller('EditPageController', ['$scope',
-        '$stateParams', 'issueService', '$modal', 'FileUploader',
-
-        function($scope, $stateParams, issueService, $modal, FileUploader) {
-
-            'use strict';
-            $scope.isActive = true;
-            $scope.pageid = $stateParams.pageid;
-            //$scope.main={}
-            //$scope.main.bg= $scope.issuePostService.issuePost.page[$stateParams.pageid].csstext
-            //$scope.main.child=$scope.issuePostService.issuePost.page[$stateParams.pageid].child
-            $scope.selectItem = 0;
-            console.log($scope.issuePostService.issuePost.page[$scope.pageid])
-
-            $scope.selected = function(index) {
-                $scope.selectItem = index;
-            };
-
-            $scope.del = function(key, object) {
-                //object.splice(key,1)
-                if (Array.isArray(object)) object.splice(key, 1)
-                else delete object[key]
-                    //delete $scope.issuePostService.issuePost.page[$scope.pageid].child[$scope.selectItem].csstext[key]
-                    //console.log( $scope.issuePostService.issuePost.page[$scope.pageid].child[$scope.selectItem].csstext)
-            }
-            $scope.addMC = function() {
-                var addPage = new issueService.mc()
-                console.log($scope.pageid)
-                $scope.issuePostService.issuePost.page[$scope.pageid].child.push(addPage)
-            }
-
-            $scope.addCss = function() {
-                var modalInstance = $modal.open({
-                    templateUrl: 'templates/addcss.html',
-                    controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-                        $scope.ok = function(css) {
-                            //console.log( $scope.issuePostService.issuePost.page[$scope.pageid].child)
-                            //$scope.issuePostService.issuePost.page[$scope.pageid].child[$scope.selectItem].csstext.push('{'+css.name+':'+css.val+'}')
-                            if (css && css.name) $scope.issuePostService.issuePost.page[$scope.pageid].child[$scope.selectItem].csstext[css.name] = css.val
-                            $modalInstance.close()
-                        }
-
-
-                    }],
-                    scope: $scope,
-                    size: 'sm'
-                })
-
-            }
-
-            //$scope.addImg=function(){
-
-            //}
-
-            $scope.upload = function(obj) {
-
-                console.log(obj)
-                setTimeout(function() {
-                    document.getElementById('uploadinput').click()
-                        //$scope.clicked = true;
-                }, 0);
-            }
-
-            var uploader = $scope.uploader = new FileUploader({
-                url: 'data/api_1.php/rest/uploadimage/',
-                autoUpload: 'true'
-            });
-
-            uploader.onSuccessItem = function(fileItem, response, status, headers) {
-                console.info('onSuccessItem', fileItem, response, status, headers);
-                console.info(response)
-            };
-
-
-        }
-    ])
     .directive('signup', ['$http', function($http) {
 
         return {

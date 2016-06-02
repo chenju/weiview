@@ -300,6 +300,25 @@ div {
     animation:start 1.5s infinite ease-in-out
 }
 
+.up_b{
+    position:absolute;
+    display:block;
+    width:64px;
+    height:64px;
+    overflow:hidden;
+    background:url(../img/arrow_down_h.png) 0 0px no-repeat;
+    background-size:100% 100%;
+    left:50%;
+    bottom:30px;
+    margin:0 0 0 -32px;
+    -webkit-animation:start 1.5s infinite ease-in-out;
+    -moz-animation:start 1.5s infinite ease-in-out;
+    -o-animation:start 1.5s infinite ease-in-out;
+    -ms-animation:start 1.5s infinite ease-in-out;
+    animation:start 1.5s infinite ease-in-out
+}
+
+
 .keep{
     -webkit-transition:-webkit-transform .4s linear;
     -moz-transition:-moz-transform .4s linear;

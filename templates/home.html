@@ -4,7 +4,7 @@
     <section ng-repeat="x in datas" class='sec{{$index}}' ng-style="{height:{{style.pageH}}+'px'}">
         <div class="h_wrp" ng-style="x.csstext">
             <div init ng-repeat="c in x.child" elay='{{c.delay}}' addClass="{{c.animat}}" class="animated" ng-style="{{c.csstext}}" ng-touchend="{{c.action}}">{{c.label}}</div>
-            <i class='up' ng-show="!$last"></i>
+            <i ng-show="!$last" ng-class="{true:'up',false:'up_b'}[{{x.arrow}}==black] "></i>
             <i ng-if="audioable" ng-class="{true: 'cir'}[audio.playing]" class="music btn_audio" ng-touchend="audio_control()"></i>
             <signup ng-if="x.signupapi" url='{{x.signupapi}}'></signup>
     </section>
