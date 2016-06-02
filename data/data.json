@@ -4,7 +4,8 @@
         "id":"1",
         "title": "第一条",
         "time":"2013",
-        "music": "music/ym.mp3",
+        "preloadimages":["./img/arrow_down.png"],
+        "music": null,
         "page": [{
             
             "csstext": {
@@ -162,6 +163,12 @@
                     "color": "white"
                 }
             }]
+        },{
+            "csstext": {
+                "background": "black"
+            },
+            "signupapi":"/api/event/groupbuy",
+            "child": []
         }]
     },
     {

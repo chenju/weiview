@@ -5,7 +5,7 @@
 
 angular.module('wscene.controllers', []).controller('HomeController',
 
-        function($scope, $location, $timeout, $activityIndicator, preloader, $http, IssuePostService) {
+        function($scope, $location, $timeout, $activityIndicator, preloader, $http, IssuePostService, audioService) {
 
             'use strict';
             var prefix = (function() {
@@ -34,10 +34,10 @@ angular.module('wscene.controllers', []).controller('HomeController',
             $scope.pagnum = 0
             $scope.pageanmi = []
 
-            $scope.imageLocations = [
-                //("./img/01.png?v=1&cache=" + (new Date()).getTime()), ("./img/02.png?v=1&cache=" + (new Date()).getTime())
-                "./img/01.png", "./img/02.png"
-            ];
+            //$scope.imageLocations = [
+            //("./img/01.png?v=1&cache=" + (new Date()).getTime()), ("./img/02.png?v=1&cache=" + (new Date()).getTime())
+            //"./img/arrow_down.png", 
+            //];
 
 
             $scope.title = 'ngView content';
@@ -71,7 +71,11 @@ angular.module('wscene.controllers', []).controller('HomeController',
                     });
             }
 
+
+
             function init(response) {
+
+                $scope.imageLocations = response.preloadimages
 
                 preloader.preloadImages($scope.imageLocations).then(
                     function handleResolve(imageLocations) {
@@ -116,57 +120,62 @@ angular.module('wscene.controllers', []).controller('HomeController',
                 $scope.datas = response.page;
                 //load music
                 if (response.music) {
+
+                    $scope.audio = audioService;
+                    $scope.audio.load(response.music)
                     $scope.audioable = true
-                    $scope._audio_val = false;
-                    var _audioSrc = response.music,
-                        _audio = null;
-                    
-                    var options_audio = {
-                        loop: true,
-                        preload: "auto",
-                        src: _audioSrc
-                    }
-                    _audio = new Audio();
-                    
-                    for (var key in options_audio) {
-                        if (options_audio.hasOwnProperty(key) && (key in _audio)) {
-                            _audio[key] = options_audio[key];
-                        }
-                    }
-                    _audio.load();
-                    
-
-                    _audio.addEventListener('play',
-                        function() {
-                            $scope._audio_val = true;
-                        })
-                    _audio.addEventListener('pause',
-                        function() {
-                            $scope._audio_val = false;
-                        })
-
-                    _audio.play();
 
                     $scope.audio_control = function() {
-                        console.log(_audio)
-                        if ($scope._audio_val) {
-                             $scope.audio_stop();
+
+                        if ($scope.audio.playing) {
+                            $scope.audio.stop();
                         } else {
-                             $scope.audio_play();
+                            $scope.audio.play();
                         }
                     }
-                    $scope.audio_play = function() {
-                        //e.find(".btn_audio").removeClass("stop")
-                        $scope._audio_val=true
-                        if (_audio) _audio.play();
-                    }
-
-                    $scope.audio_stop = function() {
-                        //e.find(".btn_audio").addClass("stop")
-                        $scope._audio_val = false;
-                        if (_audio) _audio.pause();
-                    };
                 }
+
+                wx.ready(function() {
+
+                    wx.checkJsApi({
+                        jsApiList: ['onMenuShareAppMessage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                        success: function(res) {
+                            // 以键值对的形式返回，可用的api值true，不可用为false
+                            // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                            console.log('ok')
+                        }
+                    });
+
+                    wx.onMenuShareAppMessage({
+                        title: '武汉百安居团签会', // 分享标题
+                        desc: '2016年5月28日诚邀您参加武汉百安居团签会。', // 分享描述
+                        link: '', // 分享链接
+                        imgUrl: 'http://www.bnq.com.cn/dc/img/logo.png', // 分享图标
+                        type: '', // 分享类型,music、video或link，不填默认为link
+                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                        success: function() {
+                            // 用户确认分享后执行的回调函数
+
+
+                        },
+                        cancel: function() {
+                            // 用户取消分享后执行的回调函数
+                        }
+                    });
+
+                    wx.onMenuShareTimeline({
+                        title: '武汉百安居团签会', // 分享标题
+                        link: '', // 分享链接
+                        imgUrl: 'http://www.bnq.com.cn/dc/img/logo.png', // 分享图标
+                        success: function() {
+                            // 用户确认分享后执行的回调函数
+                        },
+                        cancel: function() {
+                            // 用户取消分享后执行的回调函数
+                        }
+                    });
+
+                })
 
                 $scope.pagecount = $scope.datas.length
                 $scope.resize()
@@ -438,80 +447,81 @@ angular.module('wscene.controllers', []).controller('HomeController',
 
         }
     ])
-    .controller('PlayController', function($scope, $location, $interval, $state) {
+    .directive('signup', ['$http', function($http) {
 
-        $scope.isActive = true;
-        $scope.data = {};
-        $scope.data.count = 0;
-        $scope.data.times = 30
-        $scope.puzzle = {};
-        $scope.puzzle.rows = 2;
-        $scope.puzzle.cols = 2;
-        $scope.puzzle.src = "img/02.png";
-        $scope.puzzle.color = 'blue'
-        var clock = function() {
-            $scope.data.times--
-                if ($scope.data.times < 1) {
-                    $interval.cancel(p);
-                    alert("你一共找到了" + $scope.data.count + "个王煮鱼");
-                    $state.go('over')
+        return {
+            restrict: "AE",
+            replace: true,
+            scope: {
+                name: "=",
+                phone: "=",
+                url: "@"
+            },
+            link: function(scope, element, attrs) {
+
+                element[0].querySelector('.name').addEventListener('touchend', function(event) {
+                    /* Act on the event */
+                    this.focus()
+                    event.preventDefault()
+                });
+
+                element[0].querySelector('.phone').addEventListener('touchend', function(event) {
+                    /* Act on the event */
+                    this.focus()
+                    event.preventDefault()
+                });
+
+                element[0].querySelector('.submit').addEventListener('touchend', function(event) {
+                    /* Act on the event */
+                    if (check()) {
+                        $http({
+                            method: 'POST',
+                            url: scope.url,
+                            data: { name: scope.name, phone: scope.phone }
+                        }).success(function(data) {
+                            console.log('报名成功');
+                        }).
+                        error(function(data) {
+                            console.log(data)
+                            return data;
+                        });
+                    }
+                    event.preventDefault()
+                });
+
+
+                function check() {
+
+                    if (!scope.name || !scope.phone || scope.name == '' || scope.phone == '') {
+                        alert('请输入正确信息')
+                        return false
+                    }
+                    if (scope.phone.length < 11) {
+                        alert('请输入11位手机号码！');
+                        element[0].querySelector('.phone').focus()
+                        return false;
+                    }
+
+                    var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+                    if (!myreg.test(scope.phone)) {
+                        alert('请输入有效的手机号码！');
+                        element[0].querySelector('.phone').focus()
+                        return false;
+                    }
+                    return true
                 }
+
+
+            },
+            template: "<dl class=\"signup\">" +
+                "<input type=\"text\" ng-model=\"name\" class=\"name\">" +
+                "<input type=\"number\" ng-model=\"phone\" class=\"phone\"/>" +
+                "<dd class='submit' ng-click=\"rollService.dataPost()\"></dd>" +
+                "</dl>"
         }
 
-        var p = $interval(clock, 1000);
-        /*p.then(function() {
-            
-            
-        });*/
-        $scope.pause = function() {
-            $interval.cancel(p);
-            $scope.data.pause = true
-        }
-
-        $scope.restart = function() {
-            p = $interval(clock, 1000);
-            $scope.data.pause = false
-        }
-
-        $scope.$on(
-            "$destroy",
-            function(event) {
-
-                $interval.cancel(p);
-                watch()
-
-            }
-        );
-
-        var ar = [3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 10]
-        var clr = ['#0969a2', '#36d986', '#ffa940', '#ff9473', 'blue', 'yellow']
-
-        var next = function() {
-
-            var n = $scope.data.count;
-            var a
-            if (n < ar.length) a = ar[n]
-            else {
-                a = 11;
-            }
-
-            $scope.puzzle.rows = $scope.puzzle.cols = a
-            $scope.puzzle.color = clr[Math.floor(Math.random() * clr.length)]
-            $scope.puzzle.api.shuffle($scope.puzzle.color)
-            $scope.data.count++
-
-        }
-
-        var watch = $scope.$watch('puzzle.api.finded', function(newValue, oldValue, scope) {
-
-            if (newValue) {
-                next()
-            }
-
-        });
-
-
-    }).directive('touch', function() {
+    }])
+    .directive('touch', function() {
         return {
             controller: function($scope, $element, $attrs, $timeout, $location) {
 
