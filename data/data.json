@@ -13,7 +13,6 @@
             "csstext": {
                 "background-image": "url(img/bg.png)"
             },
-            "arrow":"black",
             "child": [{
                 "label": "动画测试bounceIn",
                 "animat": "bounceIn",
@@ -92,7 +91,7 @@
             "csstext": {
                 "background": "yellow"
             },
-            "arrow":"false",
+            "arrow":"white",
             "child": [{
                 "label": "页内跳转无过场",
                 "animat": "fadeIn",
